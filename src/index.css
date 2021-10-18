@@ -1,0 +1,16 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.feature {
+  padding-left: 10px;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+}
+
+.App {
+  width: 300px
+}

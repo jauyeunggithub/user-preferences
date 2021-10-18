@@ -72,14 +72,14 @@ const FeaturesList = ({
   const [show, setShow] = useState<ShowItemStates>({});
 
   return Array.isArray(features) ? (
-    <div style={{ cursor: "pointer" }}>
+    <div className='cursor-pointer'>
       {features.map((f) => {
         const { id, title, price, subFeatures } = f;
 
         const isSelected = Boolean(selectedFeatures.find((f) => f.id === id));
 
         return (
-          <div key={id} style={{ paddingLeft: "10px" }}>
+          <div key={id} className='feature'>
             <p
               onClick={() =>
                 setShow((show: ShowItemStates) => ({
@@ -105,7 +105,7 @@ const FeaturesList = ({
                 }}
               />
               {title} {price && `$${price}`}
-              {Array.isArray(subFeatures) && (show[id] ? "(-)" : "(+)")}
+              {Array.isArray(subFeatures) && (show[id] ? " (-)" : " (+)")}
             </p>
             {show[id] && (
               <FeaturesList
@@ -141,7 +141,7 @@ export default function App() {
         setSelectedFeatures={setSelectedFeatures}
         selectedFeatures={selectedFeatures}
       />
-      <div>
+      <div className='total'>
         <div>Total: ${total} / mo </div>
         <button>Save</button>
       </div>
