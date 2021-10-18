@@ -78,12 +78,6 @@ const FeaturesList = ({
 
         const isSelected = Boolean(selectedFeatures.find((f) => f.id === id));
 
-        const hasChildrenChecked =
-          selectedFeatures.filter((f) => {
-            const subFeatureIds = subFeatures?.map((s) => s.id) ?? [];
-            return subFeatureIds.includes(f.id);
-          }).length > 0;
-
         return (
           <div key={id} style={{ paddingLeft: "10px" }}>
             <p
@@ -96,16 +90,19 @@ const FeaturesList = ({
             >
               <input
                 type="checkbox"
-                checked={isSelected || hasChildrenChecked}
-                onChange={() =>
+                checked={isSelected}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                onChange={() => {
                   setSelectedFeatures((selectedFeatures) => {
                     if (isSelected) {
                       return selectedFeatures.filter((f) => f.id !== id);
                     } else {
                       return [...selectedFeatures, f];
                     }
-                  })
-                }
+                  });
+                }}
               />
               {title} {price && `$${price}`}
               {Array.isArray(subFeatures) && (show[id] ? "(-)" : "(+)")}
