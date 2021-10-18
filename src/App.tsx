@@ -28,12 +28,10 @@ const data: Feature[] = [
       {
         title: "Sub-feature A-1",
         id: uuidv4(),
-        price: 0,
       },
       {
         title: "Sub-feature A-2",
         id: uuidv4(),
-        price: 0,
         subFeatures: [
           {
             title: "Sub-feature A-2-1",
@@ -50,7 +48,6 @@ const data: Feature[] = [
       {
         title: "Sub-feature A-3",
         id: uuidv4(),
-        price: 0,
       },
     ],
   },
@@ -72,14 +69,14 @@ const FeaturesList = ({
   const [show, setShow] = useState<ShowItemStates>({});
 
   return Array.isArray(features) ? (
-    <div className='cursor-pointer'>
+    <div className="cursor-pointer">
       {features.map((f) => {
         const { id, title, price, subFeatures } = f;
 
         const isSelected = Boolean(selectedFeatures.find((f) => f.id === id));
 
         return (
-          <div key={id} className='feature'>
+          <div key={id} className="feature">
             <p
               onClick={() =>
                 setShow((show: ShowItemStates) => ({
@@ -104,8 +101,11 @@ const FeaturesList = ({
                   });
                 }}
               />
-              {title} {price && `$${price}`}
-              {Array.isArray(subFeatures) && (show[id] ? " (-)" : " (+)")}
+              <span>{title}</span>
+              <span> {price && `($${price})`}</span>
+              <span>
+                {Array.isArray(subFeatures) && (show[id] ? "(-)" : "(+)")}
+              </span>
             </p>
             {show[id] && (
               <FeaturesList
@@ -141,7 +141,7 @@ export default function App() {
         setSelectedFeatures={setSelectedFeatures}
         selectedFeatures={selectedFeatures}
       />
-      <div className='total'>
+      <div className="total">
         <div>Total: ${total} / mo </div>
         <button>Save</button>
       </div>

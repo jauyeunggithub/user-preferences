@@ -6,6 +6,10 @@
   padding-left: 10px;
 }
 
+.feature span {
+  margin: 1px;
+}
+
 .total {
   display: flex;
   justify-content: space-between;
