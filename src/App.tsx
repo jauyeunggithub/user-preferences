@@ -78,6 +78,12 @@ const FeaturesList = ({
 
         const isSelected = Boolean(selectedFeatures.find((f) => f.id === id));
 
+        const hasChildrenChecked =
+          selectedFeatures.filter((f) => {
+            const subFeatureIds = subFeatures?.map((s) => s.id) ?? [];
+            return subFeatureIds.includes(f.id);
+          }).length > 0;
+
         return (
           <div key={id} style={{ paddingLeft: "10px" }}>
             <p
@@ -90,7 +96,7 @@ const FeaturesList = ({
             >
               <input
                 type="checkbox"
-                checked={isSelected}
+                checked={isSelected || hasChildrenChecked}
                 onChange={() =>
                   setSelectedFeatures((selectedFeatures) => {
                     if (isSelected) {
@@ -101,7 +107,7 @@ const FeaturesList = ({
                   })
                 }
               />
-              {title} {price && `$${price}`}{" "}
+              {title} {price && `$${price}`}
               {Array.isArray(subFeatures) && (show[id] ? "(-)" : "(+)")}
             </p>
             {show[id] && (
@@ -123,7 +129,13 @@ const FeaturesList = ({
 export default function App() {
   const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
 
-  const total = useMemo(() => {}, [selectedFeatures]);
+  const total = useMemo(() => {
+    return selectedFeatures
+      .map((f) => f.price)
+      .reduce((a, b) => {
+        return (a ?? 0) + (b ?? 0);
+      }, 0);
+  }, [selectedFeatures]);
 
   return (
     <div className="App">
@@ -132,6 +144,10 @@ export default function App() {
         setSelectedFeatures={setSelectedFeatures}
         selectedFeatures={selectedFeatures}
       />
+      <div>
+        <div>Total: ${total} / mo </div>
+        <button>Save</button>
+      </div>
     </div>
   );
 }
