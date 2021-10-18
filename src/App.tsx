@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 interface Feature {
@@ -10,6 +10,10 @@ interface Feature {
 
 interface FeatureProps {
   features: Feature[] | undefined;
+  setSelectedFeatures: (
+    value: Feature[] | ((prevVar: Feature[]) => Feature[])
+  ) => void;
+  selectedFeatures: Feature[];
 }
 
 interface ShowItemStates {
@@ -60,13 +64,19 @@ const data: Feature[] = [
   },
 ];
 
-const FeaturesList = ({ features }: FeatureProps) => {
+const FeaturesList = ({
+  features,
+  setSelectedFeatures,
+  selectedFeatures,
+}: FeatureProps) => {
   const [show, setShow] = useState<ShowItemStates>({});
 
   return Array.isArray(features) ? (
     <div style={{ cursor: "pointer" }}>
       {features.map((f) => {
         const { id, title, price, subFeatures } = f;
+
+        const isSelected = Boolean(selectedFeatures.find((f) => f.id === id));
 
         return (
           <div key={id} style={{ paddingLeft: "10px" }}>
@@ -78,9 +88,29 @@ const FeaturesList = ({ features }: FeatureProps) => {
                 }))
               }
             >
-              {title} {price && `$${price}`} {Array.isArray(subFeatures) && (show[id] ? '(-)' : '(+)')}
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={() =>
+                  setSelectedFeatures((selectedFeatures) => {
+                    if (isSelected) {
+                      return selectedFeatures.filter((f) => f.id !== id);
+                    } else {
+                      return [...selectedFeatures, f];
+                    }
+                  })
+                }
+              />
+              {title} {price && `$${price}`}{" "}
+              {Array.isArray(subFeatures) && (show[id] ? "(-)" : "(+)")}
             </p>
-            {show[id] && <FeaturesList features={subFeatures} />}
+            {show[id] && (
+              <FeaturesList
+                features={subFeatures}
+                setSelectedFeatures={setSelectedFeatures}
+                selectedFeatures={selectedFeatures}
+              />
+            )}
           </div>
         );
       })}
@@ -91,9 +121,17 @@ const FeaturesList = ({ features }: FeatureProps) => {
 };
 
 export default function App() {
+  const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
+
+  const total = useMemo(() => {}, [selectedFeatures]);
+
   return (
     <div className="App">
-      <FeaturesList features={data} />
+      <FeaturesList
+        features={data}
+        setSelectedFeatures={setSelectedFeatures}
+        selectedFeatures={selectedFeatures}
+      />
     </div>
   );
 }
